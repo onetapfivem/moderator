@@ -20,4 +20,4 @@ class ApiInterface {
         return new Response(response["status"], response["code"], response["message"], response["data"]);
     }
 }
-export default ApiInterface
+export default new ApiInterface()

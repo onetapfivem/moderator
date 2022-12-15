@@ -1,25 +1,12 @@
-import React from 'react';
-import {useAsync} from "react-async"
-import ApiInterface from "./modules/ApiInterface.js";
+import Player from "./components/Player.jsx";
 
-const apiInterface = new ApiInterface();
-
-const fetchPlayer = async ({ license }) => {
-    const response = await apiInterface.Request("GET", "/player/", `license=${license}`);
-    return response["data"];
-}
-
-const Player = ({ license }) => {
-    const { data } = useAsync({ promiseFn: fetchPlayer, license });
-    if(data) {
-        return (
-            <h1>Username: {data["username"]}</h1>
-        )
-    }
-}
-
-const App = () => {
-    return <Player license={"root"} />
+function App() {
+    return (
+        <div className={"text-black dark:text-white p-5"}>
+            <h1 className={"text-xl font-bold"}>Players</h1>
+            <Player license={"1283475b2ecc03ae6d18b5a1a6248d04ac197a71"}/>
+        </div>
+    )
 }
 
 export default App
