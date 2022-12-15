@@ -10,7 +10,7 @@ const fetchPlayer = async ({ license }) => {
 const Avatar = ({ url }) => {
     if(url !== null) {
         return (
-            <img src={url} alt={"Avatar"} className={"w-full h-full rounded-full shadow-lg shadow-black/20"}></img>
+            <img src={url} alt={"Avatar"} className={"object-cover w-full h-full rounded-full shadow-lg shadow-black/20"}></img>
         )
     }
     return null;
@@ -29,7 +29,7 @@ const Player = ({ license }) => {
                 </div>
                 <div className={"flex flex-row items-center"}>
                     <p className={"text-xs text-light-500"}>{data["license"]}</p>
-                    <button onClick={() =>{navigator.clipboard.writeText(data["license"]).then()} } className={"text-xs outline-none bg-light-800 dark:bg-dark-600 ml-2 p-1 duration-200 rounded-md ring-green-400 active:ring-2"}>Kopieren</button>
+                    <button onClick={() =>{navigator.clipboard.writeText(data["license"]).then()} } className={"text-xs outline-none bg-light-800 dark:bg-dark-600 ml-2 p-1 duration-200 rounded-md ring-green-400/50 active:ring-4"}>Kopieren</button>
                 </div>
                 <hr className={"border-2 rounded-md border-black dark:border-white w-full my-2"}></hr>
             </div>
