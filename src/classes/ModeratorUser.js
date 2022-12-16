@@ -47,6 +47,8 @@ class ModeratorUser {
         let encodedCredentials = btoa(`${username}:${password}`);
         const result = await this.load(encodedCredentials);
         sessionStorage.setItem("credentials", encodedCredentials);
+        ApiInterface.headers["Authentication"] = `Basic ${encodedCredentials}`;
         return result;
     }
 }
+export default ModeratorUser
