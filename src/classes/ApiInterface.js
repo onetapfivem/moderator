@@ -1,6 +1,8 @@
 import Response from "./Response.js";
 class ApiInterface {
-    headers = {};
+    headers = {
+        "Accept": "application/json"
+    };
 
     /**
      * Makes a JSON Request to the API.

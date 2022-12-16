@@ -7,6 +7,10 @@ class ModeratorUser {
         this.permissions = permissions;
     }
 
+    hasPermission(permission) {
+        return this.permissions.includes(permission) || this.permissions.includes("*");
+    }
+
     /**
      * Returns the stored session credentials.
      * @returns {Promise<ModeratorUser|undefined>}
@@ -14,7 +18,9 @@ class ModeratorUser {
     static async fromSession() {
         const credentials = sessionStorage.getItem("credentials");
         if(credentials !== null) {
-            return await this.load(credentials);
+            const result = await this.load(credentials);
+            ApiInterface.headers["Authentication"] = `Basic ${credentials}`;
+            return result;
         } throw new Error("No credentials stored in the session.");
     }
 
@@ -28,6 +34,7 @@ class ModeratorUser {
         if(!decodedCredentials.includes(":") && decodedCredentials.split(":").length === 2) {
             throw new Error("Invalid credentials format.");
         }
+        decodedCredentials = decodedCredentials.split(":");
         const response = await ApiInterface.JsonRequest("POST", "/root/validation", JSON.stringify({
             username: decodedCredentials[0],
             password: decodedCredentials[1]
