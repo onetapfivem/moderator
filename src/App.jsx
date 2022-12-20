@@ -2,13 +2,31 @@ import ModeratorUser from "./classes/ModeratorUser.js";
 import {useAsync} from "react-async";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+import {faCircleNodes} from "@fortawesome/free-solid-svg-icons";
+import {faPerson} from "@fortawesome/free-solid-svg-icons";
 import Login from "./pages/Login.jsx";
 import Player from "./components/Player.jsx";
+import ApiInterface from "./classes/ApiInterface.js";
 
 let moderatingUser = null;
+let players = [];
+let specimens = [];
+let connections = [];
 const fetchModeratingUser = async () => {
     try {
         moderatingUser = await ModeratorUser.fromSession();
+        let response = await ApiInterface.Request("GET", "/root/all/players");
+        if(response.code === 1) {
+            players = response.data;
+        }
+        response = await ApiInterface.Request("GET", "/root/all/specimens");
+        if(response.code === 1) {
+            specimens = response.data;
+        }
+        response = await ApiInterface.Request("GET", "/root/all/connections");
+        if(response.code === 1) {
+            connections = response.data;
+        }
     } catch (exception) {
         return null;
     }
@@ -26,8 +44,34 @@ const App = () => {
     }
     if(isFulfilled) {
         if(data !== null) {
+            const playerElements = players.map(player =>
+                <Player key={player["license"]} license={player["license"]}
+                        optionBan={moderatingUser.hasPermission("specimenBan")}
+                        optionUnban={moderatingUser.hasPermission("specimenUnban")}
+                        optionKick={moderatingUser.hasPermission("specimenKick")}
+                        optionRemoveAvatar={moderatingUser.hasPermission("playerRemoveAvatar")}
+                />
+            );
             return (
-                <Player license={"efbcd83e2a2a893214f6dd2f1db84e80fba67919"} optionBan={moderatingUser.hasPermission("specimenBan")} optionUnban={moderatingUser.hasPermission("specimenUnban")} optionKick={moderatingUser.hasPermission("specimenKick")}/>
+                <div>
+                    <div className={"p-10 bg-light-900 dark:bg-dark-400 sticky top-0 w-full shadow-2xl shadow-black/10"}>
+                        <h1 className={"text-black dark:text-white font-bold text-3xl mb-2"}>Statistics</h1>
+                        <div className={"flex flex-row items-center"}>
+                            <FontAwesomeIcon className={"text-black dark:text-white text-sm mr-2"} icon={faCircleNodes}/>
+                            <p className={"text-black dark:text-white text-sm"}>{connections.length} connections in total.</p>
+                        </div>
+                        <div className={"flex flex-row items-center"}>
+                            <FontAwesomeIcon className={"text-black dark:text-white text-sm mr-2"} icon={faPerson}/>
+                            <p className={"text-black dark:text-white text-sm"}>{players.length} players in total.</p>
+                        </div>
+                    </div>
+                    <div className={"p-10"}>
+                        <h2 className={"text-black dark:text-white font-bold text-2xl my-10"}>Players</h2>
+                        <div className={"flex-1 overflow-auto flex flex-row flex-wrap items-center justify-center w-full gap-5"}>
+                            {playerElements}
+                        </div>
+                    </div>
+                </div>
             )
         } else {
             return (
