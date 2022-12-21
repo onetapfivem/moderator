@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTriangleExclamation} from "@fortawesome/free-solid-svg-icons";
 import KickOptions from "./KickOptions.jsx";
 import RemoveAvatarOptions from "./RemoveAvatarOptions.jsx";
+import ChangeNameOptions from "./ChangeNameOptions.jsx";
 
 const fetchPlayer = async ({ license }) => {
     const response = await ApiInterface.Request("GET", "/player/", `license=${license}`);
@@ -29,10 +30,11 @@ const Player = ({ license, optionBan = false, optionUnban = false, optionKick = 
     const [error, setError] = useState("");
     if(data) {
         return (
-            <div className={"bg-light-900 dark:bg-dark-800 text-black dark:text-white flex flex-col w-full p-5 max-w-2xl h-40 rounded-md md:shadow-xl shadow-black/25 shadow-none"}>
+            <div className={"bg-light-900 dark:bg-dark-800 text-black dark:text-white flex flex-col w-full p-5 max-w-2xl rounded-md md:shadow-xl shadow-black/25 shadow-none"}>
                 <div className={"flex flex-row items-center"}>
                     <Avatar url={data["avatar"]}></Avatar>
                     <h1 className={"font-bold text-xl truncate max-w-xs"}>{data["username"]}</h1>
+                    <ChangeNameOptions errorState={setError} license={data["license"]}></ChangeNameOptions>
                 </div>
                 <div className={"flex flex-row items-center"}>
                     <p className={"text-xs text-light-500 truncate"}>{data["license"]}</p>
@@ -43,7 +45,7 @@ const Player = ({ license, optionBan = false, optionUnban = false, optionKick = 
                     {optionUnban && <UnbanOptions errorState={setError} license={data["license"]}/>}
                     {optionBan && <BanOptions errorState={setError} license={data["license"]}/>}
                     {optionKick && <KickOptions errorState={setError} license={data["license"]}/>}
-                    {optionRemoveAvatar && <RemoveAvatarOptions errorState={setError} license={data["license"]}/>}
+                    {optionRemoveAvatar && data["avatar"] !== null && <RemoveAvatarOptions errorState={setError} license={data["license"]}/>}
                 </div>
                 {error !== "" ?
                     <div className={"flex flex-row items-center text-red-500 mt-2 p-2 bg-light-900 dark:bg-dark-600 rounded-md border-2 border-red-500/20"}>
