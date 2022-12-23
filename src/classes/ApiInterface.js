@@ -30,7 +30,7 @@ class ApiInterface {
      * @returns {Promise<Response>}
      * @constructor
      */
-    async Request(method, endpoint, query = null) {
+    async Request(method, endpoint, query = "") {
         let response = await fetch(`https://api.onetapfivem.com/v4${endpoint}?${query}`, {
             method: method,
             headers: this.headers

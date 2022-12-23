@@ -12,8 +12,10 @@ let moderatingUser = null;
 let players = [];
 let specimens = [];
 let connections = [];
+let livePlayers = [];
 const fetchModeratingUser = async () => {
     try {
+        await new Promise(r => setTimeout(r, 2000));
         moderatingUser = await ModeratorUser.fromSession();
         let response = await ApiInterface.Request("GET", "/root/all/players");
         if(response.code === 1) {
@@ -27,11 +29,15 @@ const fetchModeratingUser = async () => {
         if(response.code === 1) {
             connections = response.data;
         }
+        response = await fetch("https://servers-frontend.fivem.net/api/servers/single/4xkdb9");
+        response = await response.json();
+        livePlayers = response["Data"]["players"];
     } catch (exception) {
         return null;
     }
 }
 const App = () => {
+
     const { data, isPending, isFulfilled } = useAsync({ promiseFn: fetchModeratingUser });
     if(isPending) {
         return (
@@ -45,7 +51,7 @@ const App = () => {
     if(isFulfilled) {
         if(data !== null) {
             const playerElements = players.map(player =>
-                <Player key={player["license"]} license={player["license"]}
+                <Player specimen={specimens[specimens.findIndex(s => s["license"] === player["license"])]} key={player["license"]} license={player["license"]}
                         optionBan={moderatingUser.hasPermission("specimenBan")}
                         optionUnban={moderatingUser.hasPermission("specimenUnban")}
                         optionKick={moderatingUser.hasPermission("specimenKick")}
@@ -63,6 +69,10 @@ const App = () => {
                         <div className={"flex flex-row items-center"}>
                             <FontAwesomeIcon className={"text-black dark:text-white text-sm mr-2"} icon={faPerson}/>
                             <p className={"text-black dark:text-white text-sm"}>{players.length} players in total.</p>
+                        </div>
+                        <div className={"flex flex-row items-center"}>
+                            <FontAwesomeIcon className={"text-black dark:text-white text-sm mr-2"} icon={faPerson}/>
+                            <p className={"text-black dark:text-white text-sm"}>{livePlayers.length} players online.</p>
                         </div>
                     </div>
                     <div className={"px-10 py-2"}>

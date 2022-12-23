@@ -25,10 +25,14 @@ const Avatar = ({ url }) => {
     return null;
 }
 
-const Player = ({ license, optionBan = false, optionUnban = false, optionKick = false, optionRemoveAvatar = false }) => {
+const Player = ({ specimen, license, optionBan = false, optionUnban = false, optionKick = false, optionRemoveAvatar = false }) => {
     const { data } = useAsync({ promiseFn: fetchPlayer, license });
     const [error, setError] = useState("");
     if(data) {
+        const endpoints = JSON.parse(specimen["endpoints"]);
+        const endpointElements = endpoints.map(endpoint =>
+            <p>{endpoint}</p>
+        );
         return (
             <div className={"bg-light-900 dark:bg-dark-800 text-black dark:text-white flex flex-col w-full p-5 max-w-2xl rounded-md md:shadow-xl shadow-black/25 shadow-none"}>
                 <div className={"flex flex-row items-center"}>
@@ -47,6 +51,14 @@ const Player = ({ license, optionBan = false, optionUnban = false, optionKick = 
                     {optionKick && <KickOptions errorState={setError} license={data["license"]}/>}
                     {optionRemoveAvatar && data["avatar"] !== null && <RemoveAvatarOptions errorState={setError} license={data["license"]}/>}
                 </div>
+                <hr className={"border-2 rounded-md border-black dark:border-white w-full my-2"}></hr>
+                <h1 className={"font-bold text-sm max-w-xs"}>Endpoints</h1>
+                <div className={"flex flex-row flex-wrap gap-3"}>
+                    {endpointElements}
+                </div>
+                <hr className={"border-2 rounded-md border-black dark:border-white w-full my-2"}></hr>
+                <h1 className={"font-bold text-sm max-w-xs"}>Ban Status</h1>
+                {specimen["banned"] ? (<div>Banned until {specimen["banned_until"]}, reason: {specimen["banned_reason"]}.</div>) : (<p>Not Banned.</p>)}
                 {error !== "" ?
                     <div className={"flex flex-row items-center text-red-500 mt-2 p-2 bg-light-900 dark:bg-dark-600 rounded-md border-2 border-red-500/20"}>
                         <FontAwesomeIcon className={"text-sm mr-1"} icon={faTriangleExclamation}/>

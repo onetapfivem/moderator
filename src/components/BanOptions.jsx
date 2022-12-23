@@ -15,8 +15,8 @@ const BanOptions = ({ license, errorState }) => {
             errorState("Reason is empty.");
             return;
         }
-        if(duration < 60) {
-            errorState("Duration must be at least 60 seconds.");
+        if(duration < 1) {
+            errorState("Duration must be at least 1 minute.");
             return;
         }
         errorState("");
